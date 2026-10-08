@@ -1,5 +1,5 @@
 streamlit
-streamlit-drawable-canvas
+streamlit-drawable-canvas[image]
 tensorflow-cpu
 numpy
 pillow
