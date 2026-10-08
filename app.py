@@ -119,9 +119,17 @@ def segment_and_predict(canvas_image, model, min_area=100):
     return predicted_number, results
 
 
-if canvas_result.image_data is not None:
-    if canvas_result.image_data[:, :, :3].max() > 0:  # canvas is not empty
-        predicted_number, results = segment_and_predict(canvas_result.image_data, model)
+# Newer versions of streamlit-drawable-canvas raise RuntimeError if image_data
+# is read before the canvas has sent any data (e.g. on first page load).
+# So we read it safely and treat that case as "nothing drawn yet".
+try:
+    image_data = canvas_result.image_data
+except RuntimeError:
+    image_data = None
+
+if image_data is not None:
+    if image_data[:, :, :3].max() > 0:  # canvas is not empty
+        predicted_number, results = segment_and_predict(image_data, model)
 
         if predicted_number:
             st.divider()
